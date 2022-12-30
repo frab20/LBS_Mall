@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Routing gps</title>
+
+    <!-- Css Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+      ,
+      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+      crossorigin=""
+    />
+
+    <!-- Css Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+
+    <!-- Css Routing -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"
+    />
+
+    <!-- Css Button custom -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"
+    />
+
+    <style>
+      #map {
+        height: 100vh;
+      }
+
+      .custom .leaflet-popup-tip,
+      .custom .leaflet-popup-content-wrapper,
+      .leaflet-popup-content {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <!-- Js Leaflet -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+      integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+      crossorigin=""
+    ></script>
+
+    <!-- Js Bootstrap -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Js Routing -->
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+    <!-- Js Button custom -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
+    <!-- Js Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/7084857220.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      var map = L.map("map").setView([-7.8062917, 110.3157522], 12);
+
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 20,
+      }).addTo(map);
+
+      var mallIcon = L.icon({
+        iconUrl: "images/mall.png",
+        iconSize: [30, 30], // size of the icon
+      });
+
+      var lokasi_tujuan = L.marker(
+        L.latLng(GetURLParameter("lat1"), GetURLParameter("lng1")),
+        { icon: mallIcon }
+      )
+        .bindPopup("Lokasi tujuan")
+        .openPopup()
+        .addTo(map);
+
+      var lokasi_berangkat = L.marker(
+        L.latLng(GetURLParameter("lat2"), GetURLParameter("lng2"))
+      )
+        .bindPopup("Lokasi awal")
+        .openPopup()
+        .addTo(map);
+
+      L.Routing.control({
+        waypoints: [lokasi_berangkat.getLatLng(), lokasi_tujuan.getLatLng()],
+        routeWhileDragging: true,
+        lineOptions: {
+          styles: [{ color: "blue", opacity: 1, weight: 3 }],
+        },
+        createMarker: function () {
+          return null;
+        },
+      }).addTo(map);
+
+      L.easyButton("fa-solid fa-house", function (btn, map) {
+        window.location.href = "index.html";
+      }).addTo(map);
+
+      function GetURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split("&");
+        for (var i = 0; i < sURLVariables.length; i++) {
+          var sParameterName = sURLVariables[i].split("=");
+          if (sParameterName[0] == sParam) {
+            return sParameterName[1];
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
